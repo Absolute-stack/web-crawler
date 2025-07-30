@@ -1,9 +1,9 @@
 const { JSDOM } = require('jsdom');
 
 async function crawlPage(baseURL, currentURL, pages) {
-  const baseURL = new URL(baseURL);
-  const currentURL = new URL(currentURL);
-  if (baseURL.hostname !== currentURL.hostname) {
+  const baseURLObj = new URL(baseURL);
+  const currentURLObj = new URL(currentURL);
+  if (baseURLObj.hostname !== currentURLObj.hostname) {
     return pages;
   }
 
@@ -33,8 +33,10 @@ async function crawlPage(baseURL, currentURL, pages) {
       return pages;
     }
     const htmlBody = await resp.text();
-    const nextURL = getURLSFromHTML(htmlBody, baseURL);
-    for (const nextURL of nextURLS) {
+
+    const nextURLs = getURLSFromHTML(htmlBody, baseURL);
+
+    for (const nextURL of nextURLs) {
       pages = await crawlPage(baseURL, nextURL, pages);
     }
   } catch (error) {
@@ -53,14 +55,14 @@ function getURLSFromHTML(htmlBody, baseURL) {
         const urlObj = new URL(`${baseURL}${linkElement.href}`);
         urls.push(urlObj.href);
       } catch (err) {
-        console.log(err);
+        console.log(`Error parsing relative URL: ${err.message}`);
       }
     } else {
       try {
         const urlObj = new URL(linkElement.href);
         urls.push(urlObj.href);
       } catch (err) {
-        console.log(err);
+        console.log(`Error parsing absolute URL: ${err.message}`);
       }
     }
   }
