@@ -1,9 +1,9 @@
 {
   "name": "web-crawler",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "crawl.js",
   "scripts": {
-    "start": "node crawl.js",
+    "start": "node main.js",
     "test": "jest"
   },
   "author": "",
@@ -11,5 +11,8 @@
   "description": "",
   "devDependencies": {
     "jest": "^30.0.5"
+  },
+  "dependencies": {
+    "jsdom": "^26.1.0"
   }
 }

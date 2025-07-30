@@ -1,3 +1,29 @@
+const { JSDOM } = require('jsdom');
+
+function getURLSFromHTML(htmlBody, baseURL) {
+  const urls = [];
+  const dom = new JSDOM(htmlBody);
+  const linkElements = dom.window.document.querySelectorAll('a');
+  for (const linkElement of linkElements) {
+    if (linkElement.href.slice(0, 1) === '/') {
+      try {
+        const urlObj = new URL(`${baseURL}${linkElement.href}`);
+        urls.push(urlObj.href);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      try {
+        const urlObj = new URL(linkElement.href);
+        urls.push(urlObj.href);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+  return urls;
+}
+
 function normalizeURL(urlString) {
   const url = new URL(urlString);
   const hostPath = `${url.hostname}${url.pathname}`;
@@ -7,8 +33,7 @@ function normalizeURL(urlString) {
   return hostPath;
 }
 
-normalizeURL('https://blog.boot.dev.path');
-
 module.exports = {
   normalizeURL,
+  getURLSFromHTML,
 };
